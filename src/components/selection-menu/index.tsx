@@ -117,7 +117,7 @@ function SelectionMenu({
                   }))}
                   label='Priority'
                   icon={<Flag />}
-                  onSelect={field.onChange}
+                  onSelect={(option) => field.onChange(option.value)}
                 />
               </FormControl>
               <FormMessage />
@@ -167,7 +167,7 @@ function SelectionMenu({
                   }))}
                   label='Project'
                   icon={<Menu />}
-                  onSelect={field.onChange}
+                  onSelect={(option) => field.onChange(option.value)}
                 />
               </FormControl>
               <FormMessage />
