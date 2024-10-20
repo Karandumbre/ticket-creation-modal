@@ -86,7 +86,7 @@ export function Form(props: SelectionMenuInterface) {
     return () => {
       fetchRecommendations.cancel();
     };
-  }, [taskTitle, taskDescription]);
+  }, [taskTitle, taskDescription, fetchRecommendations]);
 
   return (
     <form

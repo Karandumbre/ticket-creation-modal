@@ -22,7 +22,7 @@ export function EditorFormatter() {
     const range = selection.getRangeAt(0);
     const parentElement = range.commonAncestorContainer.parentElement;
 
-    let currentLink =
+    const currentLink =
       parentElement.nodeName === 'A' ? parentElement.getAttribute('href') : '';
 
     const url = prompt('Enter the URL', currentLink || '');
