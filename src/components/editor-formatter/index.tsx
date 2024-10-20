@@ -11,27 +11,34 @@ import UnOrderedList from '@/assets/icons/ul.svg';
 import CheckboxList from '@/assets/icons/checkbox.svg';
 import Enter from '@/assets/icons/enter.svg';
 import styles from './style.module.css';
+import { MouseEvent } from 'react';
 
 export function EditorFormatter() {
-  const applyFormat = (command, value = null) => {
-    document.execCommand(command, false, value);
+  const applyFormat = (command: string, value?: string) => {
+    if (document && document.execCommand) {
+      document.execCommand(command, false, value);
+    }
   };
 
   const insertLink = () => {
     const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    const parentElement = range.commonAncestorContainer.parentElement;
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const parentElement = range.commonAncestorContainer.parentElement;
 
-    const currentLink =
-      parentElement.nodeName === 'A' ? parentElement.getAttribute('href') : '';
+      const currentLink =
+        parentElement?.nodeName === 'A'
+          ? (parentElement as HTMLAnchorElement).getAttribute('href')
+          : '';
 
-    const url = prompt('Enter the URL', currentLink || '');
-    if (url) {
-      const a = document.createElement('a');
-      a.href = url;
-      a.textContent = selection.toString();
-      range.deleteContents(); // Delete the current selection
-      range.insertNode(a); // Insert the new link
+      const url = prompt('Enter the URL', currentLink || '');
+      if (url) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.textContent = selection.toString();
+        range.deleteContents(); // Delete the current selection
+        range.insertNode(a); // Insert the new link
+      }
     }
   };
 
@@ -42,9 +49,20 @@ export function EditorFormatter() {
       img.src = url;
       img.alt = 'Image';
       const selection = window.getSelection();
-      const range = selection.getRangeAt(0);
-      range.insertNode(img);
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        range.insertNode(img);
+      }
     }
+  };
+
+  const handleButtonClick = (
+    e: MouseEvent<HTMLDivElement>,
+    command: string,
+    value?: string
+  ) => {
+    e.preventDefault();
+    applyFormat(command, value);
   };
 
   return (
@@ -58,31 +76,37 @@ export function EditorFormatter() {
       <div className='my-auto'>
         <Emoji />
       </div>
-      <div className='my-auto' onClick={() => applyFormat('bold')}>
+      <div className='my-auto' onClick={(e) => handleButtonClick(e, 'bold')}>
         <Bold />
       </div>
-      <div className='my-auto' onClick={() => applyFormat('italic')}>
+      <div className='my-auto' onClick={(e) => handleButtonClick(e, 'italic')}>
         <Italic />
       </div>
       <div
         className='my-auto'
-        onClick={() => applyFormat('formatBlock', 'pre')}
+        onClick={(e) => handleButtonClick(e, 'formatBlock', 'pre')}
       >
         <Code />
       </div>
       <div className='my-auto' onClick={insertLink}>
         <HyperLink />
       </div>
-      <div className='my-auto' onClick={() => applyFormat('insertOrderedList')}>
+      <div
+        className='my-auto'
+        onClick={(e) => handleButtonClick(e, 'insertOrderedList')}
+      >
         <NumberedList />
       </div>
       <div
         className='my-auto'
-        onClick={() => applyFormat('insertUnorderedList')}
+        onClick={(e) => handleButtonClick(e, 'insertUnorderedList')}
       >
         <UnOrderedList />
       </div>
-      <div className='my-auto' onClick={() => applyFormat('insertCheckbox')}>
+      <div
+        className='my-auto'
+        onClick={(e) => handleButtonClick(e, 'insertCheckbox')}
+      >
         <CheckboxList />
       </div>
       <button className={styles['create-button']} type='submit'>
