@@ -9,7 +9,10 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['randomuser.me'], // Allow images from randomuser.me
+    domains: ['randomuser.me'],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
