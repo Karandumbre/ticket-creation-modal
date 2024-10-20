@@ -1,0 +1,21 @@
+.modalOverlay {
+  @apply fixed top-0 left-0 w-full h-full flex justify-center items-center z-[1000];
+}
+
+.modalContent {
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 2px 2px 30px 10px #00000033;
+  width: 720px;
+  min-height: 270px;
+  background: white;
+  border-radius: 10px;
+}
+
+.closeButton {
+  @apply absolute top-2.5 right-2.5;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}

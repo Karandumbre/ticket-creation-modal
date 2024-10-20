@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String
+  lastName  String
+  imageSrc  String?
+  tickets   Ticket[] @relation("UserTickets")
+}
+
+model Priority {
+  id     Int      @id @default(autoincrement())
+  level  String   @unique
+  Ticket Ticket[]
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  Ticket      Ticket[]
+}
+
+model Tag {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  tickets Ticket[] @relation("TicketTags")
+}
+
+model Status {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  Ticket Ticket[]
+}
+
+model Ticket {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  priorityId  Int
+  projectId   Int
+  statusId    Int
+  createdAt   DateTime @default(now())
+
+  // Many-to-many relations for users and tags
+  users    User[]   @relation("UserTickets")
+  tags     Tag[]    @relation("TicketTags")
+  priority Priority @relation(fields: [priorityId], references: [id])
+  project  Project  @relation(fields: [projectId], references: [id])
+  status   Status   @relation(fields: [statusId], references: [id])
+}

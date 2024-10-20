@@ -1,0 +1,20 @@
+.modal-wrapper {
+  @apply px-5 pt-5 pb-0;
+}
+.title-tag {
+  @apply text-[14px] font-medium leading-[20px] tracking-[0.2px] text-left;
+}
+
+.task-title,
+.task-description {
+  color: #000;
+  font-size: 1rem;
+}
+
+.placeholder {
+  color: #94989e;
+}
+
+.create-button {
+  @apply gap-2 ml-auto flex items-center text-sm [box-shadow:0px_3px_0px_0px_#3F2ABD] bg-[#533BE5] rounded-lg h-[34px] p-[10px] text-white;
+}
