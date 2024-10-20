@@ -9,9 +9,15 @@ import Menu from '@/assets/icons/menu.svg';
 import { Option } from '@/types';
 import Image from 'next/image';
 import DateInput from '@/components/calendar';
-import { SelectionMenuInterface, SelectedValueInterface } from '@/types';
+import { SelectionMenuInterface } from '@/types';
 import { MultiSelectDropdown } from '@/components/multi-select'; // Import the new multi-select dropdown
-
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
+import { Control, FieldValues } from 'react-hook-form';
 function formatStatus(status: string): string {
   return status
     .toLowerCase() // Convert to lower case
@@ -20,88 +26,155 @@ function formatStatus(status: string): string {
 }
 
 function SelectionMenu({
+  control,
   priorities,
   statuses,
   assignees,
   tags,
   projects,
-  handleSelections,
 }: SelectionMenuInterface & {
-  handleSelections: (values: SelectedValueInterface) => void;
+  control: Control<FieldValues>;
 }) {
-  const handleSelect = (option: Option, type: string) => {
-    handleSelections({ value: option.value, label: option.label, type });
-  };
-
-  const handleMultiSelect = (selectedOptions: Option[], type: string) => {
+  // @ts-expect-error@Expected
+  const handleMultiSelect = (selectedOptions: Option[], field) => {
     const values = selectedOptions.map((option) => option.value);
-    handleSelections({ value: values, type });
+    field.onChange(values);
   };
 
   return (
     <div className='flex gap-2 flex-wrap'>
-      <Dropdown
-        options={statuses.map((item) => ({
-          value: item.id,
-          label: formatStatus(item.name),
-        }))}
-        label='Status'
-        icon={<Elipses />}
-        onSelect={(option) => handleSelect(option, 'statusId')}
-      />
-
-      <MultiSelectDropdown
-        options={assignees.map((item) => ({
-          value: item.id,
-          label: item.firstName,
-          icon: (
-            <Image
-              src={item.imageSrc!}
-              alt={item.firstName}
-              width={20}
-              height={20}
-              className='rounded-full'
-            />
-          ),
-        }))}
-        label='Select Assignees'
-        icon={<Person />}
-        onSelect={(selectedOptions) =>
-          handleMultiSelect(selectedOptions, 'assigneeId')
-        }
-      />
-
-      <Dropdown
-        options={priorities.map((item) => ({
-          value: item.id,
-          label: item.level,
-        }))}
-        label='Priority'
-        icon={<Flag />}
-        onSelect={(option) => handleSelect(option, 'priorityId')}
-      />
-
-      <MultiSelectDropdown
-        options={tags.map((item) => ({
-          value: item.id,
-          label: item.name,
-        }))}
-        label='Select Tags'
-        icon={<Tag />}
-        onSelect={(selectedOptions) => {
-          return handleMultiSelect(selectedOptions, 'tagId');
+      <FormField
+        control={control}
+        name='status'
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <Dropdown
+                  {...field}
+                  options={statuses.map((item) => ({
+                    value: item.id,
+                    label: formatStatus(item.name),
+                  }))}
+                  label='Status'
+                  icon={<Elipses />}
+                  onSelect={(option) => field.onChange(option.value)}
+                />
+              </FormControl>{' '}
+              <FormMessage />
+            </FormItem>
+          );
         }}
-      />
+      ></FormField>
 
-      <Dropdown
-        options={projects.map((project) => ({
-          value: project.id,
-          label: project.name,
-        }))}
-        label='Project'
-        icon={<Menu />}
-        onSelect={(option) => handleSelect(option, 'projectId')}
-      />
+      <FormField
+        control={control}
+        name='assigneeId'
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <MultiSelectDropdown
+                  {...field}
+                  options={assignees.map((item) => ({
+                    value: item.id,
+                    label: item.firstName,
+                    icon: (
+                      <Image
+                        src={item.imageSrc!}
+                        alt={item.firstName}
+                        width={20}
+                        height={20}
+                        className='rounded-full'
+                      />
+                    ),
+                  }))}
+                  label='Select Assignees'
+                  icon={<Person />}
+                  onSelect={(selectedOptions) =>
+                    handleMultiSelect(selectedOptions, field)
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      ></FormField>
+
+      <FormField
+        control={control}
+        name='priorityId'
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <Dropdown
+                  {...field}
+                  options={priorities.map((item) => ({
+                    value: item.id,
+                    label: item.level,
+                  }))}
+                  label='Priority'
+                  icon={<Flag />}
+                  onSelect={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      ></FormField>
+
+      <FormField
+        control={control}
+        name='tagId'
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <MultiSelectDropdown
+                  {...field}
+                  options={tags.map((item) => ({
+                    value: item.id,
+                    label: item.name,
+                  }))}
+                  label='Select Tags'
+                  icon={<Tag />}
+                  onSelect={(selectedOptions) =>
+                    handleMultiSelect(selectedOptions, field)
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      ></FormField>
+
+      <FormField
+        control={control}
+        name='projectId'
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <Dropdown
+                  {...field}
+                  options={projects.map((project) => ({
+                    value: project.id,
+                    label: project.name,
+                  }))}
+                  label='Project'
+                  icon={<Menu />}
+                  onSelect={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      ></FormField>
 
       <DateInput />
     </div>

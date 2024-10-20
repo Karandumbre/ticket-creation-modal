@@ -72,19 +72,6 @@ export interface ListProps {
   tags: Tag[];
 }
 
-export interface SelectedSelectionsInterface {
-  statusId: string | null;
-  assigneeId: [];
-  priorityId: string | null;
-  tagId: [];
-  projectId: string | null;
-}
-export interface FormData {
-  taskTitle: string;
-  taskDescription: string;
-  selectedSelections: SelectedSelectionsInterface;
-}
-
 export type Option = {
   icon?: React.ReactNode;
   label: string | React.ReactNode;

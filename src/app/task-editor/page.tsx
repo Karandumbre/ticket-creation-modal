@@ -9,7 +9,7 @@ import {
   getTags,
   getProjects,
 } from '@/lib/resolvers';
-import { Form } from '@/components/task-form-component';
+import Form from '@/components/task-form-component';
 
 async function TaskEditor() {
   const priorities = await getPriorities();

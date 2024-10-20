@@ -1,3 +1,10 @@
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 type DebounceFunction<F extends (...args: unknown[]) => void> = {
   (...args: Parameters<F>): void; // The debounced function itself
   cancel: () => void; // The cancel method

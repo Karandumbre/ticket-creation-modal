@@ -1,38 +1,37 @@
 'use server';
 import prisma from '@/lib/prisma';
 import { redirect } from 'next/navigation';
-import { FormData } from '@/types';
 import { revalidatePath } from 'next/cache';
+import * as z from 'zod';
+import { formSchema } from '@/components/task-form-component';
 
-export async function submitData(formData: FormData) {
+export async function submitData(formData: z.infer<typeof formSchema>) {
+  const {
+    title,
+    description,
+    status,
+    tagId,
+    assigneeId,
+    priorityId,
+    projectId,
+  } = formData;
+
   try {
-    const {
-      taskTitle,
-      taskDescription,
-      selectedSelections: {
-        statusId,
-        assigneeId,
-        priorityId,
-        tagId,
-        projectId,
-      },
-    } = formData;
-
     await prisma.ticket.create({
       data: {
-        title: taskTitle,
-        description: taskDescription,
+        title,
+        description,
         status: {
-          connect: { id: Number(statusId) }, // Connect status by ID
+          connect: { id: Number(status) }, // Connect status by ID
         },
         users: {
-          connect: assigneeId.map((id: string) => ({ id: String(id) })), // Connect multiple users
+          connect: assigneeId!.map((id: string) => ({ id: String(id) })), // Connect multiple users
         },
         priority: {
           connect: { id: Number(priorityId) }, // Connect priority by ID
         },
         tags: {
-          connect: tagId.map((id: number) => ({ id: Number(id) })), // Connect multiple tags
+          connect: tagId!.map((id: number) => ({ id: Number(id) })), // Connect multiple tags
         },
         project: {
           connect: { id: Number(projectId) }, // Connect project by ID

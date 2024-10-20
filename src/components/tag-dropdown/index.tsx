@@ -1,12 +1,12 @@
 'use client';
 import { useState } from 'react';
 import { DropdownProps, Option } from '@/types';
-
 const Dropdown: React.FC<DropdownProps> = ({
   options,
   label,
   icon,
   onSelect,
+  ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
@@ -22,7 +22,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <div className='relative inline-block text-left'>
+    <div className='relative inline-block text-left' {...props}>
       <div>
         <button
           type='button'
