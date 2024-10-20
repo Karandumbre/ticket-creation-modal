@@ -6,7 +6,7 @@ import {
   SelectedValueInterface,
   Recommendation,
 } from '@/types';
-import { EditorFormatter } from '../editor-formatter';
+import EditorFormatter from '../editor-formatter';
 import { submitData } from '@/lib/actions';
 import { getRecommendations } from '@/lib/resolvers'; // Import the getRecommendations function
 import { debounce } from '@/lib/utils'; // Import debounce from lodash
@@ -24,6 +24,7 @@ export function Form(props: SelectionMenuInterface) {
   const [taskDescription, setTaskDescription] = useState('');
   const [isDescriptionFocused, setIsDescriptionFocused] = useState(false);
   const contentDescriptionRef = useRef<HTMLDivElement | null>(null);
+  const editorFormatterRef = useRef<HTMLDivElement | null>(null);
   const [selectedSelections, setSelectedSelection] =
     useState<SelectedSelectionsInterface>({
       statusId: null,
@@ -51,7 +52,7 @@ export function Form(props: SelectionMenuInterface) {
 
   const handleDescriptionBlur = () => {
     setIsDescriptionFocused(false);
-    const content = contentDescriptionRef.current?.innerText; // Store as HTML for rich text
+    const content = contentDescriptionRef.current?.innerHTML; // Store as HTML for rich text
     setTaskDescription(content || '');
   };
 
@@ -179,7 +180,10 @@ export function Form(props: SelectionMenuInterface) {
         />
       </div>
       <hr />
-      <EditorFormatter />
+      <EditorFormatter
+        contentDescriptionRef={contentDescriptionRef}
+        ref={editorFormatterRef}
+      />
     </form>
   );
 }

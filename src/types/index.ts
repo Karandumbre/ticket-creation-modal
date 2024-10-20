@@ -26,7 +26,7 @@ export interface SelectionMenuInterface {
 }
 
 export interface SelectedValueInterface {
-  value: number | string | Array<{ value: string | number; label: string }>;
+  value: number | string | Array<string | number>;
   label?: string | React.ReactNode;
   type: string;
 }

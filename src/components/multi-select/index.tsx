@@ -1,10 +1,20 @@
 'use client';
 import { Fragment, useState } from 'react';
-import { DropdownProps, Option } from '@/types';
+import { Option } from '@/types';
 
-export const MultiSelectDropdown: React.FC<
-  DropdownProps & { onSelect: (options: Option[]) => void }
-> = ({ options, label, icon, onSelect }) => {
+export type DropdownProps = {
+  options: Array<Option>;
+  label: string;
+  onSelect: (options: Option[]) => void;
+  icon?: React.ReactNode;
+};
+
+export const MultiSelectDropdown: React.FC<DropdownProps> = ({
+  options,
+  label,
+  icon,
+  onSelect,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
 
