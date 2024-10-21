@@ -58,10 +58,10 @@ export function List({
         </h3>
       </div>
 
-      <p
+      <div
         className='text-sm text-gray-700 mb-2'
         dangerouslySetInnerHTML={{ __html: description }}
-      ></p>
+      ></div>
 
       <div className='inline-flex flex-row gap-1 flex-wrap'>
         {/* Render multiple users */}
