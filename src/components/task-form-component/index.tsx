@@ -12,13 +12,13 @@ import React, { useState, useEffect } from 'react';
 import SelectionMenu from '@/components/selection-menu';
 import { SelectionMenuInterface, Recommendation } from '@/types';
 import { submitData } from '@/lib/actions';
-import { getRecommendations } from '@/lib/resolvers'; // Import the getRecommendations function
-import { debounce } from '@/lib/utils'; // Import debounce from lodash
+import { getRecommendations } from '@/lib/resolvers';
+import { debounce } from '@/lib/utils';
 import Suggestions from '@/assets/icons/suggestions.svg';
 import AnimatedSuggestion from '@/assets/icons/animated-suggesstion.svg';
 import AiSuggestion from '@/components/ai-sugesstion';
 import { Tiptap } from '../tiptap';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -56,10 +56,16 @@ export default function FormComponent(props: SelectionMenuInterface) {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [isRecommendationLoading, setIsRecommendationLoading] = useState(false);
 
-  // Debounced function to fetch recommendations
+  const title = useWatch({
+    control: form.control,
+    name: 'title',
+  });
+  const description = useWatch({
+    control: form.control,
+    name: 'description',
+  });
+
   const fetchRecommendations = debounce(async () => {
-    const title = form.getValues('title');
-    const description = form.getValues('description');
     if (title && description) {
       setIsRecommendationLoading(true);
       try {
@@ -71,15 +77,14 @@ export default function FormComponent(props: SelectionMenuInterface) {
         setIsRecommendationLoading(false);
       }
     }
-  }, 500); // Adjust debounce time as needed
+  }, 1000);
 
   useEffect(() => {
     fetchRecommendations();
-    // Cleanup function to cancel the debounce on unmount
     return () => {
       fetchRecommendations.cancel();
     };
-  }, [form.getValues('title'), form.getValues('description')]);
+  }, [title, description]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     submitData(values);

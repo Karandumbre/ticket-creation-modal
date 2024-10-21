@@ -17,7 +17,7 @@ export async function submitData(formData: z.infer<typeof formSchema>) {
   } = formData;
 
   try {
-    await prisma.ticket.create({
+    const response = await prisma.ticket.create({
       data: {
         title,
         description,
@@ -38,6 +38,8 @@ export async function submitData(formData: z.infer<typeof formSchema>) {
         },
       },
     });
+
+    return { message: 'Ticket created successfully', response };
   } catch (error) {
     console.error('Error creating ticket:', error);
     throw new Error('Error creating ticket');
