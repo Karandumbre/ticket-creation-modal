@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect, useRef } from 'react';
 import { Option } from '@/types';
 
 export type DropdownProps = {
@@ -17,6 +17,7 @@ export const MultiSelectDropdown: React.FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -35,8 +36,24 @@ export const MultiSelectDropdown: React.FC<DropdownProps> = ({
     onSelect(updatedSelectedOptions);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className='relative inline-block text-left'>
+    <div className='relative inline-block text-left' ref={dropdownRef}>
       <div>
         <button
           type='button'
